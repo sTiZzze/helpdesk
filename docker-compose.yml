@@ -1,0 +1,20 @@
+version: "3.2"
+services:
+  postgres:
+    container_name: helpdesk-db
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_DB=helpdesk
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    volumes:
+      - ./.var/postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  redis:
+    container_name: helpdesk-redis
+    image: redis:6-alpine
+    volumes:
+      - ./.var/redis:/data
+    ports:
+      - "6379:6379"
