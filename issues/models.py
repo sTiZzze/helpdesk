@@ -8,20 +8,17 @@ from django_fsm import FSMField, transition
 logger = logging.getLogger(__name__)
 
 
-class State(object):
+class State(models.TextChoices):
     OPEN = 'open'
     PAUSED = 'paused'
     RESOLVED = 'resolved'
-
-    STATES = (OPEN, PAUSED, RESOLVED)
-    CHOICES = [(OPEN, 'Open'), (PAUSED, 'Paused'), (RESOLVED, 'Resolved')]
 
 
 class Issue(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     topic = models.CharField(max_length=255)
     text = models.TextField()
-    state = FSMField(default=State.OPEN, choices=State.CHOICES, protected=False)
+    state = FSMField(default=State.OPEN, choices=State.choices, protected=False)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
