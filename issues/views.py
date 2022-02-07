@@ -5,17 +5,17 @@ from rest_framework.viewsets import ViewSet
 
 from issues.permissions import IssuePermission
 
-from .models import Issue
-from .serializers import (CreateIssueSerializer, CreateMessageSerializer,
-                          IssueSerializer, MessageSerializer)
-from .tasks import pause_issue, resolve_issue, reopen_issue
+from issues.models import Issue
+from issues.serializers import (CreateIssueSerializer, CreateMessageSerializer,
+                                IssueSerializer, MessageSerializer)
+from issues.tasks import pause_issue, resolve_issue, reopen_issue
 
 
 class IssueViewSet(ViewSet):
     """
     Issues API
     """
-    permission_classes = [IssuePermission]
+    permission_classes = (IssuePermission,)
 
     def list(self, request):
         """List all issues"""

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from rest_framework import routers
 
-from . import views
+from issues import views
 
 router = routers.DefaultRouter()
 router.register('issues', views.IssueViewSet, "issues")
