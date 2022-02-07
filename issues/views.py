@@ -26,14 +26,9 @@ class IssueViewSet(ViewSet):
     def create(self, request):
         """Create a new issue"""
         form = CreateIssueSerializer(data=request.data)
-        try:
-            if form.is_valid():
-                issue = form.save(user=request.user)
-                return Response(status=201, data=IssueSerializer(issue).data)
-            else:
-                return Response(status=400, data=form.errors)
-        except Exception as e:
-            return Response(status=400, data=str(e))
+        form.is_valid(raise_exception=True)
+        issue = form.save(user=request.user)
+        return Response(status=201, data=IssueSerializer(issue).data)
 
     def retrieve(self, request, pk):
         """Query an issue"""
@@ -48,15 +43,10 @@ class IssueViewSet(ViewSet):
         """Create a new message in an issue"""
         issue = get_object_or_404(Issue, pk=pk)
         self.check_object_permissions(request, issue)
-        try:
-            form = CreateMessageSerializer(data=request.data)
-            if form.is_valid():
-                message = form.save(user=request.user, issue=issue)
-                return Response(status=201, data=MessageSerializer(message).data)
-            else:
-                return Response(status=400, data=form.errors)
-        except Exception as e:
-            return Response(status=400, data=str(e))
+        form = CreateMessageSerializer(data=request.data)
+        form.is_valid(raise_exception=True)
+        message = form.save(user=request.user, issue=issue)
+        return Response(status=201, data=MessageSerializer(message).data)
 
     @action(detail=True, methods=['post'])
     def pause(self, request, pk):
