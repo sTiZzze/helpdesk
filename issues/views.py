@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from rest_framework import status
 
 from issues.permissions import IssuePermission
 
@@ -28,7 +29,7 @@ class IssueViewSet(ViewSet):
         form = CreateIssueSerializer(data=request.data)
         form.is_valid(raise_exception=True)
         issue = form.save(user=request.user)
-        return Response(status=201, data=IssueSerializer(issue).data)
+        return Response(status=status.HTTP_201_CREATED, data=IssueSerializer(issue).data)
 
     def retrieve(self, request, pk):
         """Query an issue"""
@@ -46,7 +47,7 @@ class IssueViewSet(ViewSet):
         form = CreateMessageSerializer(data=request.data)
         form.is_valid(raise_exception=True)
         message = form.save(user=request.user, issue=issue)
-        return Response(status=201, data=MessageSerializer(message).data)
+        return Response(status=status.HTTP_201_CREATED, data=MessageSerializer(message).data)
 
     @action(detail=True, methods=['post'])
     def pause(self, request, pk):
@@ -58,11 +59,11 @@ class IssueViewSet(ViewSet):
             task = pause_issue.delay(issue.id)
             task.wait()
         except Exception as e:
-            return Response(status=400, data=str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST_NOT_FOUND, data=str(e))
 
         issue = get_object_or_404(Issue, pk=pk)
         data = IssueSerializer(issue).data
-        return Response(status=200, data=data)
+        return Response(status=status.HTTP_200_OK, data=data)
 
     @action(detail=True, methods=['post'])
     def resolve(self, request, pk):
@@ -74,10 +75,10 @@ class IssueViewSet(ViewSet):
             task = resolve_issue.delay(issue.id)
             task.wait()
         except Exception as e:
-            return Response(status=400, data=str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST_NOT_FOUND, data=str(e))
 
         data = IssueSerializer(issue).data
-        return Response(status=200, data=data)
+        return Response(status=status.HTTP_200_OK, data=data)
 
     @action(detail=True, methods=['post'])
     def reopen(self, request, pk):
@@ -89,7 +90,7 @@ class IssueViewSet(ViewSet):
             task = reopen_issue.delay(issue.id)
             task.wait()
         except Exception as e:
-            return Response(status=400, data=str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST_NOT_FOUND, data=str(e))
 
         data = IssueSerializer(issue).data
-        return Response(status=200, data=data)
+        return Response(status=status.HTTP_200_OK, data=data)
