@@ -1,12 +1,12 @@
-version: "3.2"
+version: "3.7"
 services:
   postgres:
     container_name: helpdesk-db
     image: postgres:12-alpine
     environment:
-      - POSTGRES_DB=helpdesk
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
     volumes:
       - ./.var/postgresql:/var/lib/postgresql/data
     ports:
@@ -18,3 +18,30 @@ services:
       - ./.var/redis:/data
     ports:
       - "6379:6379"
+  app:
+    container_name: helpdesk-app
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres
+      - redis
+      - celery
+  celery:
+    container_name: helpdesk-celery
+    build: .
+    command: celery -A helpdesk worker
+    volumes:
+      - .:/app
+    environment:
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres
+      - redis

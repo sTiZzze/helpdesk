@@ -7,7 +7,31 @@ Create virtual env:
 ```
 python3 -m venv .venv
 ```
+Configure environment variables:
 
+```
+cp .env.sample .env
+```
+
+Start services
+
+```
+docker-compose up -d postgres redis
+```
+
+Apply migrations
+
+```
+docker-compose run app python manage.py migrate
+```
+
+Start app
+
+```
+docker-compose up app
+```
+
+## How to run locally
 Activate virtual env:
 
 ```
