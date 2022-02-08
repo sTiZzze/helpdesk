@@ -59,7 +59,7 @@ class IssueViewSet(ViewSet):
             task = pause_issue.delay(issue.id)
             task.wait()
         except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST_NOT_FOUND, data=str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=str(e))
 
         issue = get_object_or_404(Issue, pk=pk)
         data = IssueSerializer(issue).data
@@ -75,7 +75,7 @@ class IssueViewSet(ViewSet):
             task = resolve_issue.delay(issue.id)
             task.wait()
         except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST_NOT_FOUND, data=str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=str(e))
 
         data = IssueSerializer(issue).data
         return Response(status=status.HTTP_200_OK, data=data)
@@ -90,7 +90,7 @@ class IssueViewSet(ViewSet):
             task = reopen_issue.delay(issue.id)
             task.wait()
         except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST_NOT_FOUND, data=str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=str(e))
 
         data = IssueSerializer(issue).data
         return Response(status=status.HTTP_200_OK, data=data)

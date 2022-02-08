@@ -10,7 +10,7 @@ services:
     volumes:
       - ./.var/postgresql:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5435:5432"
   redis:
     container_name: helpdesk-redis
     image: redis:6-alpine
